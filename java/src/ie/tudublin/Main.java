@@ -9,6 +9,12 @@ public class Main
 		Dog penny = new Dog();
 		penny.setName("Penny");
 		penny.speak();
+
+		Cat ginnger = new Cat("Ginger");
+
+		for(int i = 0; i < 9; i++){
+			ginnger.kill();
+		}
 	}
 	
 }
