@@ -3,7 +3,45 @@ package ie.tudublin;
 import processing.core.PApplet;
 // My please
 public class BugZap extends PApplet
+	
 {
+
+	interface enitity{
+		public void draw();
+		public void checkCollision();
+		public void shootBullet();
+	}
+
+	class player implements enitity{
+		private float x;
+		private float y;
+		private float width; 
+		public player(float x, float y, float width) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+		}
+		
+	}
+
+	class cpu{
+		private float x;
+		private float y;
+		private float width;
+		public cpu(float x, float y, float width) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+		}
+	}
+
+	float playerX = 50;
+	float playerY = 50;
+	float playerWidth = 50;
+
+	float CpuX = 50;
+	float CpuY = 50;
+	float CpuWidth = 50;
 
 	public void settings()
 	{
@@ -13,55 +51,89 @@ public class BugZap extends PApplet
 	public void setup() {
 		colorMode(HSB);
 		background(0);
-
-		x1 = random(0, width);
-		x2 = random(0, width);
-		y1 = random(0, height);
-		y2 = random(0, height);
-
-		float range = 5;
-
-		x1dir = random(-range, range);
-		x2dir = random(-range, range);
-		y1dir = random(-range, range);
-		y2dir = random(-range, range);
-
-		smooth();
-		
 	}
 
-	float x1, y1, x2, y2;
-	float x1dir, x2dir, y1dir, y2dir;
-	float c = 0;
 	
-	public void draw()
-	{	
-		strokeWeight(2);
-		stroke(c, 255, 255);
-		c = (c + 1f) % 255;
-		line(x1, y1, x2, y2);
+	public void draw() {
+		clear();
+		playerY += 1;
+		CpuY += 1;
+		checkCollision(playerX, playerY, playerWidth);
+		drawPlayer(playerX,playerY,playerWidth);
+		drawCpu(CpuX,CpuY,CpuWidth);
+		randomCpu();
 
-		x1 += x1dir;
-		x2 += x2dir;
-		y1 += y1dir;
-		y2 += y2dir;
-		
-		if (x1 < 0 || x1 > width)
-		{
-			x1dir = - x1dir;
-		}
-		if (y1 < 0 || y1 > height)
-		{
-			y1dir = - y1dir;
-		}
+	}
 
-		if (x2 < 0 || x2 > width)
-		{
-			x2dir = - x2dir;
+	public void drawPlayer(float x, float y, float w){
+		triangle(x, y, x+20, y - 50, x + 40, y);
+	}
+
+	public void drawCpu(float x, float y, float w){
+		triangle(x, y, x+20, y - 50, x + 40, y);
+	}
+
+	public void checkCollision(float x, float y, float w){
+		System.out.println(playerX + " " + playerY + " " + playerWidth);
+		if( playerY > height){
+			playerY = 500;
 		}
-		if (y2 < 0 || y2 > height)
-		{
-			y2dir = - y2dir;
+		if(playerX > 450){
+			playerX = 450;
+		}
+		if(playerX < 0){
+			playerX = 0;
 		}
 	}
+
+	public void shootBullet(float x, float y, float w){
+		colorMode(RGB);
+		stroke(255,0,0);
+		line(x, y, x - 50, y - 50);
+	}
+
+	public void randomCpu(){
+		if((frameCount % 60) == 0){
+		CpuX = random(0,450);
+		CpuY = random(0,500);
+		CpuWidth = random(0,500);
+		}
+		
+	}
+
+	public void keyPressed()
+	{
+		if (keyCode == LEFT)
+		{
+			System.out.println("Left arrow pressed");
+			playerX -= 10;
+
+		}
+		if (keyCode == RIGHT)
+		{
+			System.out.println("Right arrow pressed");
+			playerX += 10;
+		}
+
+		if(keyCode == UP)
+		{
+			System.out.println("Up arrow pressed");
+			playerY -= 10;
+		}
+
+		if(keyCode == DOWN)
+		{
+			System.out.println("Down arrow pressed");
+			playerY += 10;
+		}
+
+		if (key == ' ')
+		{
+			System.out.println("SPACE key pressed");
+			shootBullet(playerX,playerY,playerWidth);
+		}
+	}	
+
+
+	
 }
